@@ -1,9 +1,16 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 
-function Search() {
+function Search(props) {
+  const [searchValue, setSearchValue] = useState('');
+  
+  useEffect(() => {
+    props.handleSearch(searchValue);
+    console.log(searchValue);
+  }, [searchValue])
+
   return (
     <div className='mb-4'>
-      <input type="text" placeholder='Live search' />
+      <input onChange={(e) => setSearchValue(e.target.value)} type="text" placeholder='Live search' />
     </div>
   )
 }

@@ -34,4 +34,10 @@ Route::get('/dashboard', function (Request $request) {
     }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Search data
+
+Route::get('/dashboard/search/{search_term}', function ($serchTrem) {
+    return Post::where('title', 'LIKE', "%{$serchTrem}%")->paginate(20);
+})->middleware(['auth', 'verified'])->name('search');
+
 require __DIR__.'/auth.php';
