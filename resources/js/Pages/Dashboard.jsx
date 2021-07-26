@@ -13,20 +13,37 @@ export default function Dashboard(props) {
 
   // we will render the table if anything
   // got change in posts state
-  useEffect(() => {}, [posts])
+  useEffect(() => { }, [posts])
 
   // fetch the next page data
   const nextPage = () => {
     setPage(prevPage => prevPage + 1);
     axios.get(`/dashboard/?page=${page}`).then(res => {
       let nextPosts = res.data.data;
-      setPosts([...posts,...nextPosts]);
+      setPosts([...posts, ...nextPosts]);
+    })
+  }
+
+  // fetch data in search next page
+  const nextSearchPage = async () => {
+    setPage(prevPage => prevPage + 1);
+    await axios.get(`/dashboard/search/${search}?page=${page}`).then(res => {
+      let nextPosts = res.data.data;
+      setPosts([...posts, ...nextPosts]);
     })
   }
 
   // handle search
-  const handleSearch = (searchData) => {
-    // console.log(searchData);
+  const handleSearch = async (searchData) => {
+    setPage(2);
+    setSearch(searchData);
+    if (search) {
+      let url = `/dashboard/search/${searchData}`;
+
+      await axios.get(url).then(res => {
+        setPosts(res.data.data);
+      }).catch(error => { })
+    }
   }
 
   return (
@@ -37,18 +54,31 @@ export default function Dashboard(props) {
     >
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <Search 
-            handleSearch = {handleSearch}
+          <Search
+            handleSearch={handleSearch}
           />
-          <InfiniteScroll
-            dataLength={posts.length}
-            next={nextPage}
-            hasMore={true}
-          >
-            <Table
-              posts={posts}
-            />
-          </InfiniteScroll>
+          {
+            search ?
+              <InfiniteScroll
+                dataLength={posts.length}
+                next={nextSearchPage}
+                hasMore={true}
+              >
+                <Table
+                  posts={posts}
+                />
+              </InfiniteScroll> :
+              <InfiniteScroll
+                dataLength={posts.length}
+                next={nextPage}
+                hasMore={true}
+              >
+                <Table
+                  posts={posts}
+                />
+              </InfiniteScroll>
+          }
+
         </div>
       </div>
     </Authenticated>

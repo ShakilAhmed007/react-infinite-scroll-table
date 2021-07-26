@@ -5,7 +5,6 @@ function Search(props) {
   
   useEffect(() => {
     props.handleSearch(searchValue);
-    console.log(searchValue);
   }, [searchValue])
 
   return (

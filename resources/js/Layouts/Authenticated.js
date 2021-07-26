@@ -95,6 +95,7 @@ export default function Authenticated({ auth, header, children }) {
                             method="post"
                             href={route('dashboard')}
                             active={route().current('dashboard')}
+                            as="button"
                         >
                             Dashboard
                         </ResponsiveNavLink>
